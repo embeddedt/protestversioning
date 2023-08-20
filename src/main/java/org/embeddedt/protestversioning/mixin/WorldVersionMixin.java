@@ -1,6 +1,5 @@
 package org.embeddedt.protestversioning.mixin;
 
-import net.minecraft.DetectedVersion;
 import org.embeddedt.protestversioning.Protestversioning;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -13,12 +12,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 
-@Mixin(DetectedVersion.class)
+@Mixin(targets = { "net/minecraft/class_3797" })
 public class WorldVersionMixin {
     @Unique
     private static final Map<String, String> ACTUAL_VERSION = Collections.synchronizedMap(new HashMap<>());
 
-    @Inject(method = "getName", at = @At("RETURN"), cancellable = true)
+    @Inject(method = { "getName()Ljava/lang/String;", "method_48019()Ljava/lang/String;" }, at = @At("RETURN"), cancellable = true, require = 0, remap = false)
     private void protestVersion(CallbackInfoReturnable<String> cir) {
         String newName = ACTUAL_VERSION.computeIfAbsent(cir.getReturnValue(), name -> {
             Matcher m = Protestversioning.RELEASE_VERSION.matcher(name);
