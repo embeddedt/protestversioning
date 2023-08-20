@@ -22,9 +22,10 @@ public class WorldVersionMixin {
         String newName = ACTUAL_VERSION.computeIfAbsent(cir.getReturnValue(), name -> {
             Matcher m = Protestversioning.RELEASE_VERSION.matcher(name);
             if(m.matches()) {
-                int major = Integer.valueOf(m.group(1));
-                int minor = Integer.valueOf(m.group(2));
-                String baseName = m.group(1) + "." + m.group(2);
+                int major = Integer.parseInt(m.group(1));
+                String minorMatch = m.group(2);
+                int minor = minorMatch != null ? Integer.parseInt(minorMatch) : 0;
+                String baseName = (minor == 0) ? String.valueOf(major) : (major + "." + minor);
                 if((major == 16 && minor == 5) || (major == 18 && minor == 2)) {
                     return baseName + " LTS";
                 } else
